@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using PhotoAlbum.Data.models;
 
@@ -6,12 +7,19 @@ namespace PhotoAlbum.Data
 {
     public interface IPhotoValues
     {
-        Task<Photo> GetPhotoValues();
+        Task<List<Photo>> GetPhotoValues();
     }
     
     public class PhotoValues : IPhotoValues
     {
-        public Task<Photo> GetPhotoValues()
+        private readonly IApiClient _apiClient;
+
+        public PhotoValues(IApiClient apiClient)
+        {
+            _apiClient = apiClient;
+        }
+        
+        public Task<List<Photo>> GetPhotoValues()
         {
             throw new NotImplementedException();
         }
