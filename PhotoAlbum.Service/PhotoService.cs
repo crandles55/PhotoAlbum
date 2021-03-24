@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using PhotoAlbum.Data;
 using PhotoAlbum.Data.models;
@@ -7,7 +8,7 @@ namespace PhotoAlbum.Service
 {
     public interface IPhotoService
     {
-        Task<IEnumerable<Photo>> GatherPossiblePhotosAsync();
+        Task<IEnumerable<PhotoDto>> GatherPossiblePhotosAsync(string userInput);
     }
     
     public class PhotoService : IPhotoService
@@ -20,7 +21,12 @@ namespace PhotoAlbum.Service
         }
 
 
-        public async Task<IEnumerable<Photo>> GatherPossiblePhotosAsync()
+        public async Task<IEnumerable<PhotoDto>> GatherPossiblePhotosAsync(string userInput)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public static UserInput ProcessUserInput(string userInput)
         {
             throw new System.NotImplementedException();
         }

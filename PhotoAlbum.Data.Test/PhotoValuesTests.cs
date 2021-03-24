@@ -11,11 +11,12 @@ namespace PhotoAlbum.Test
 {
     public class PhotoValuesTests
     {
-        private readonly PhotoValues _sut;
-        private readonly IApiClient _apiClient;
+        private PhotoValues _sut;
+        private IApiClient _apiClient;
         private const string Uri = "https://jsonplaceholder.typicode.com/photos?";
 
-        public PhotoValuesTests()
+        [SetUp]
+        public void SetUp()
         {
             _apiClient = Substitute.For<IApiClient>();
             _sut = new PhotoValues(_apiClient);
@@ -24,9 +25,9 @@ namespace PhotoAlbum.Test
         [Test]
         public void WhenGetPhotoValuesIsCalledThenReturnListOfPhotos()
         {
-            var expected = new List<Photo>
+            var expected = new List<PhotoDto>
             {
-                new Photo
+                new PhotoDto
                 {
                     AlbumId = 1,
                     Id = 1,
@@ -34,7 +35,7 @@ namespace PhotoAlbum.Test
                     Title = "TestTitle",
                     Url = "TestUrl"
                 },
-                new Photo
+                new PhotoDto
                 {
                     AlbumId = 2,
                     Id = 2,
@@ -46,7 +47,7 @@ namespace PhotoAlbum.Test
 
             var fullUri = new Uri(Uri);
 
-            _apiClient.GetAsync<IEnumerable<Photo>>(Arg.Is<Uri>(u => u.AbsoluteUri == fullUri.AbsoluteUri)).Returns(expected);
+            _apiClient.GetAsync<IEnumerable<PhotoDto>>(Arg.Is<Uri>(u => u.AbsoluteUri == fullUri.AbsoluteUri)).Returns(expected);
 
             var actual = _sut.GetPhotoValuesAsync(null, null, null, null, null);
 
@@ -56,55 +57,27 @@ namespace PhotoAlbum.Test
         [Test]
         public void WhenGetPhotoValuesIsCalledButNoPhotosAreFoundThenReturnEmptyList()
         {
-            var expected = new List<Photo>();
+            var expected = new List<PhotoDto>();
 
             var fullUri = new Uri(Uri);
 
-            _apiClient.GetAsync<IEnumerable<Photo>>(Arg.Is<Uri>(u => u.AbsoluteUri == fullUri.AbsoluteUri)).Returns(expected);
+            _apiClient.GetAsync<IEnumerable<PhotoDto>>(Arg.Is<Uri>(u => u.AbsoluteUri == fullUri.AbsoluteUri)).Returns(expected);
 
             var actual = _sut.GetPhotoValuesAsync(null, null, null, null, null);
 
             actual.Result.ToList().Should().BeEquivalentTo(expected);
         }
-        
-        [Test]
-        public void WhenBuildingPhotoUriStringWithAllParametersReturnCorrectString()
-        {
-            const int albumId = 1;
-            const int id = 1;
-            const string title = "Test Title";
-            const string url = "Test Url";
-            const string thumbnailUrl = "Test Thumbnail Url";
-            
-            var expected =
-                $"https://jsonplaceholder.typicode.com/photos?albumId={albumId}&id={id}&title={title}&url={url}&thumbnailUrl={thumbnailUrl}&";
 
-            var actual = _sut.PhotoUriBuilder(albumId, id, title, url, thumbnailUrl);
-
-            actual.ToString().Should().BeEquivalentTo(expected);
-        }
-        
-        [Test]
-        public void WhenBuildingPhotoUriStringWithNoParametersReturnCorrectString()
-        {
-            const string title = null;
-            const string url = null;
-            const string thumbnailUrl = null;
-            
-            const string expected = "https://jsonplaceholder.typicode.com/photos?";
-
-            var actual = _sut.PhotoUriBuilder(null, null, title, url, thumbnailUrl);
-
-            actual.ToString().Should().BeEquivalentTo(expected);
-        }
-        
         [TestCase(1,1,"test", "testUrl", "Test thumbnailUrl", ExpectedResult = "https://jsonplaceholder.typicode.com/photos?albumId=1&id=1&title=test&url=testUrl&thumbnailUrl=Test thumbnailUrl&")]
-        [Theory]
-        public string WhenBuildingPhotoUriWithOnlyATitleReturnCorrectString(int? albumId, int? id, string title, string url, string thumbnailUrl)
+        [TestCase(null,1,"test", "testUrl", "Test thumbnailUrl", ExpectedResult = "https://jsonplaceholder.typicode.com/photos?id=1&title=test&url=testUrl&thumbnailUrl=Test thumbnailUrl&")]
+        [TestCase(1,null,"test", "testUrl", "Test thumbnailUrl", ExpectedResult = "https://jsonplaceholder.typicode.com/photos?albumId=1&title=test&url=testUrl&thumbnailUrl=Test thumbnailUrl&")]
+        [TestCase(1,1,null, "testUrl", "Test thumbnailUrl", ExpectedResult = "https://jsonplaceholder.typicode.com/photos?albumId=1&id=1&url=testUrl&thumbnailUrl=Test thumbnailUrl&")]
+        [TestCase(1,1,"test", null, "Test thumbnailUrl", ExpectedResult = "https://jsonplaceholder.typicode.com/photos?albumId=1&id=1&title=test&thumbnailUrl=Test thumbnailUrl&")]
+        [TestCase(1,1,"test", "testUrl", null, ExpectedResult = "https://jsonplaceholder.typicode.com/photos?albumId=1&id=1&title=test&url=testUrl&")]
+        [TestCase(null,null,null, null, null, ExpectedResult = "https://jsonplaceholder.typicode.com/photos?")]
+        [Test]
+        public string WhenBuildingPhotoUriWithVaryingInputsReturnCorrectString(int? albumId, int? id, string title, string url, string thumbnailUrl)
         {
-            var expected =
-                $"https://jsonplaceholder.typicode.com/photos?";
-
             var actual = _sut.PhotoUriBuilder(albumId, id, title, url, thumbnailUrl);
 
             return actual.ToString();

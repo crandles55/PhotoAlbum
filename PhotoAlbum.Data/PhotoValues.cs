@@ -8,7 +8,7 @@ namespace PhotoAlbum.Data
 {
     public interface IPhotoValues
     {
-        Task<IEnumerable<Photo>> GetPhotoValuesAsync(int? albumId, int? id, string title, string url, string thumbnailUrl);
+        Task<IEnumerable<PhotoDto>> GetPhotoValuesAsync(int? albumId, int? id, string title, string url, string thumbnailUrl);
         Uri PhotoUriBuilder(int? albumId, int? id, string title, string url, string thumbnailUrl);
     }
     
@@ -21,9 +21,9 @@ namespace PhotoAlbum.Data
             _apiClient = apiClient;
         }
         
-        public async Task<IEnumerable<Photo>> GetPhotoValuesAsync(int? albumId, int? id, string title, string url, string thumbnailUrl)
+        public async Task<IEnumerable<PhotoDto>> GetPhotoValuesAsync(int? albumId, int? id, string title, string url, string thumbnailUrl)
         {
-            var response = await _apiClient.GetAsync<IEnumerable<Photo>>(PhotoUriBuilder(albumId, id, title, url, thumbnailUrl));
+            var response = await _apiClient.GetAsync<IEnumerable<PhotoDto>>(PhotoUriBuilder(albumId, id, title, url, thumbnailUrl));
 
             return response;
         }
