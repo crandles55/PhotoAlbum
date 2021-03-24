@@ -21,15 +21,14 @@ namespace PhotoAlbum.Data
             var content = await response.Result.Content.ReadAsStringAsync();
 
             return JsonConvert.DeserializeObject<T>(content);
-
         }
 
         private static async Task<HttpResponseMessage> SendRequestAsync(Uri uri, HttpMethod method)
         {
             var request = new HttpRequestMessage
             {
-                Method = HttpMethod.Get,
-                RequestUri = uri,
+                Method = method,
+                RequestUri = uri
             };
 
             return await SendRequestAsync(request);

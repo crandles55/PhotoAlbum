@@ -4,7 +4,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhotoAlbum", "PhotoAlbum\Ph
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhotoAlbum.Data", "PhotoAlbum.Data\PhotoAlbum.Data.csproj", "{BF3AB9C8-A371-4A7B-A154-3DFC55D7954A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhotoAlbum.Test", "PhotoAlbum.Test\PhotoAlbum.Test.csproj", "{AB2798DE-3DC0-48DF-B68F-88B4E6238555}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhotoAlbum.Data.Test", "PhotoAlbum.Data.Test\PhotoAlbum.Data.Test.csproj", "{AB2798DE-3DC0-48DF-B68F-88B4E6238555}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhotoAlbum.Service", "PhotoAlbum.Service\PhotoAlbum.Service.csproj", "{52019F38-FF26-4392-9A12-3311541B7BF5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PhotoAlbum.Service.Test", "PhotoAlbum.Service.Test\PhotoAlbum.Service.Test.csproj", "{04CF02EE-C27F-49AF-A150-8E0CB9D55679}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -24,5 +28,13 @@ Global
 		{AB2798DE-3DC0-48DF-B68F-88B4E6238555}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AB2798DE-3DC0-48DF-B68F-88B4E6238555}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AB2798DE-3DC0-48DF-B68F-88B4E6238555}.Release|Any CPU.Build.0 = Release|Any CPU
+		{52019F38-FF26-4392-9A12-3311541B7BF5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{52019F38-FF26-4392-9A12-3311541B7BF5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{52019F38-FF26-4392-9A12-3311541B7BF5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{52019F38-FF26-4392-9A12-3311541B7BF5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{04CF02EE-C27F-49AF-A150-8E0CB9D55679}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{04CF02EE-C27F-49AF-A150-8E0CB9D55679}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{04CF02EE-C27F-49AF-A150-8E0CB9D55679}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{04CF02EE-C27F-49AF-A150-8E0CB9D55679}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
