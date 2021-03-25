@@ -1,6 +1,6 @@
 # PhotoAlbum
 
-This Console program written in C# allows the users to enter a photo album ID number and the displays the photo ID and title. The photo albums are pulled from a url that contains JSON code with descriptions for the photos.
+This Console program written in C# allows the users to enter a photo album ID number and the displays the photo ID and title. The photo albums are pulled from an online web service with descriptions for the photos.
 
 Programming Language: C#
 
