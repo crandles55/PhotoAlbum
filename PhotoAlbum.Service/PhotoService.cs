@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using PhotoAlbum.Data;
 using PhotoAlbum.Data.models;
@@ -9,6 +8,7 @@ namespace PhotoAlbum.Service
     public interface IPhotoService
     {
         Task<IEnumerable<PhotoDto>> GatherPossiblePhotosAsync(string userInput);
+        string ProcessUserInput(string userInput);
     }
     
     public class PhotoService : IPhotoService
@@ -23,12 +23,17 @@ namespace PhotoAlbum.Service
 
         public async Task<IEnumerable<PhotoDto>> GatherPossiblePhotosAsync(string userInput)
         {
-            throw new System.NotImplementedException();
+            return await _photoValues.GetPhotoValuesAsync(userInput);
         }
 
-        public static UserInput ProcessUserInput(string userInput)
+        public string ProcessUserInput(string userInput)
         {
-            throw new System.NotImplementedException();
+            if (!int.TryParse(userInput, out var albumId))
+            {
+                return "Please Enter A Single Number";
+            }
+
+            return albumId.ToString();
         }
     }
 }

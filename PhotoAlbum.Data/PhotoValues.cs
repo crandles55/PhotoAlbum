@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using PhotoAlbum.Data.models;
 
@@ -8,8 +7,8 @@ namespace PhotoAlbum.Data
 {
     public interface IPhotoValues
     {
-        Task<IEnumerable<PhotoDto>> GetPhotoValuesAsync(int? albumId, int? id, string title, string url, string thumbnailUrl);
-        Uri PhotoUriBuilder(int? albumId, int? id, string title, string url, string thumbnailUrl);
+        Task<IEnumerable<PhotoDto>> GetPhotoValuesAsync(string albumId);
+        Uri PhotoUriBuilder(string albumId);
     }
     
     public class PhotoValues : IPhotoValues
@@ -21,28 +20,15 @@ namespace PhotoAlbum.Data
             _apiClient = apiClient;
         }
         
-        public async Task<IEnumerable<PhotoDto>> GetPhotoValuesAsync(int? albumId, int? id, string title, string url, string thumbnailUrl)
+        public async Task<IEnumerable<PhotoDto>> GetPhotoValuesAsync(string albumId)
         {
-            var response = await _apiClient.GetAsync<IEnumerable<PhotoDto>>(PhotoUriBuilder(albumId, id, title, url, thumbnailUrl));
+            var response = await _apiClient.GetAsync<IEnumerable<PhotoDto>>(PhotoUriBuilder(albumId));
 
             return response;
         }
 
-        public Uri PhotoUriBuilder(int? albumId, int? id, string title, string url, string thumbnailUrl)
-        {
-            var uri = "https://jsonplaceholder.typicode.com/photos?";
-
-            uri = albumId == null ? uri : uri + $"albumId={albumId}&";
-            
-            uri = id == null ? uri : uri + $"id={id}&";
-            
-            uri = title == null ? uri : uri + $"title={title}&";
-            
-            uri = url == null ? uri : uri + $"url={url}&";
-            
-            uri = thumbnailUrl == null ? uri : uri + $"thumbnailUrl={thumbnailUrl}&";
-
-            return new Uri(uri);
-        }
+        public Uri PhotoUriBuilder(string albumId)
+            => new($"https://jsonplaceholder.typicode.com/photos?albumId={albumId}");
+        
     }
 }

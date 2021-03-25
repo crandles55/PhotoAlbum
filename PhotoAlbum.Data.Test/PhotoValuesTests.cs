@@ -13,7 +13,7 @@ namespace PhotoAlbum.Test
     {
         private PhotoValues _sut;
         private IApiClient _apiClient;
-        private const string Uri = "https://jsonplaceholder.typicode.com/photos?";
+        private const string Uri = "https://jsonplaceholder.typicode.com/photos?albumId=";
 
         [SetUp]
         public void SetUp()
@@ -23,8 +23,11 @@ namespace PhotoAlbum.Test
         }
 
         [Test]
-        public void WhenGetPhotoValuesIsCalledThenReturnListOfPhotos()
+        public void WhenGetPhotoValuesIsCalledWithNullUserInputThenReturnCompleteListOfPhotos()
         {
+
+            var userInput = "1";
+            
             var expected = new List<PhotoDto>
             {
                 new PhotoDto
@@ -37,7 +40,7 @@ namespace PhotoAlbum.Test
                 },
                 new PhotoDto
                 {
-                    AlbumId = 2,
+                    AlbumId = 1,
                     Id = 2,
                     ThunbnailUrl = "ThumbnailTest2",
                     Title = "TestTitle2",
@@ -45,11 +48,11 @@ namespace PhotoAlbum.Test
                 }
             };
 
-            var fullUri = new Uri(Uri);
+            var fullUri = new Uri(Uri + userInput);
 
             _apiClient.GetAsync<IEnumerable<PhotoDto>>(Arg.Is<Uri>(u => u.AbsoluteUri == fullUri.AbsoluteUri)).Returns(expected);
 
-            var actual = _sut.GetPhotoValuesAsync(null, null, null, null, null);
+            var actual = _sut.GetPhotoValuesAsync(userInput);
 
             actual.Result.ToList().Should().BeEquivalentTo(expected);
         }
@@ -57,30 +60,30 @@ namespace PhotoAlbum.Test
         [Test]
         public void WhenGetPhotoValuesIsCalledButNoPhotosAreFoundThenReturnEmptyList()
         {
+            var userInput = "photo-album -1";
+
             var expected = new List<PhotoDto>();
 
             var fullUri = new Uri(Uri);
 
             _apiClient.GetAsync<IEnumerable<PhotoDto>>(Arg.Is<Uri>(u => u.AbsoluteUri == fullUri.AbsoluteUri)).Returns(expected);
 
-            var actual = _sut.GetPhotoValuesAsync(null, null, null, null, null);
+            var actual = _sut.GetPhotoValuesAsync(userInput);
 
             actual.Result.ToList().Should().BeEquivalentTo(expected);
         }
 
-        [TestCase(1,1,"test", "testUrl", "Test thumbnailUrl", ExpectedResult = "https://jsonplaceholder.typicode.com/photos?albumId=1&id=1&title=test&url=testUrl&thumbnailUrl=Test thumbnailUrl&")]
-        [TestCase(null,1,"test", "testUrl", "Test thumbnailUrl", ExpectedResult = "https://jsonplaceholder.typicode.com/photos?id=1&title=test&url=testUrl&thumbnailUrl=Test thumbnailUrl&")]
-        [TestCase(1,null,"test", "testUrl", "Test thumbnailUrl", ExpectedResult = "https://jsonplaceholder.typicode.com/photos?albumId=1&title=test&url=testUrl&thumbnailUrl=Test thumbnailUrl&")]
-        [TestCase(1,1,null, "testUrl", "Test thumbnailUrl", ExpectedResult = "https://jsonplaceholder.typicode.com/photos?albumId=1&id=1&url=testUrl&thumbnailUrl=Test thumbnailUrl&")]
-        [TestCase(1,1,"test", null, "Test thumbnailUrl", ExpectedResult = "https://jsonplaceholder.typicode.com/photos?albumId=1&id=1&title=test&thumbnailUrl=Test thumbnailUrl&")]
-        [TestCase(1,1,"test", "testUrl", null, ExpectedResult = "https://jsonplaceholder.typicode.com/photos?albumId=1&id=1&title=test&url=testUrl&")]
-        [TestCase(null,null,null, null, null, ExpectedResult = "https://jsonplaceholder.typicode.com/photos?")]
+        
         [Test]
-        public string WhenBuildingPhotoUriWithVaryingInputsReturnCorrectString(int? albumId, int? id, string title, string url, string thumbnailUrl)
+        public void WhenBuildingPhotoUriWithVaryingInputsReturnCorrectString()
         {
-            var actual = _sut.PhotoUriBuilder(albumId, id, title, url, thumbnailUrl);
+            var userInput = "1";
 
-            return actual.ToString();
+            var expected = Uri + userInput;
+            
+            var actual = _sut.PhotoUriBuilder(userInput);
+
+            actual.ToString().Should().BeEquivalentTo(expected);
         }
         
     }

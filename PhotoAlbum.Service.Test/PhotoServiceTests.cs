@@ -1,7 +1,5 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Threading.Tasks;
+using System.Linq;
 using FluentAssertions;
 using NSubstitute;
 using NUnit.Framework;
@@ -13,39 +11,54 @@ namespace PhotoAlbum.Service.Test
     public class PhotoServiceTests
     {
         private PhotoService _sut;
-        private PhotoValues _photoValues;
+        private IPhotoValues _photoValues;
         
         [SetUp]
         public void Setup()
         {
-            _photoValues = Substitute.For<PhotoValues>();
+            _photoValues = Substitute.For<IPhotoValues>();
             _sut = new PhotoService(_photoValues);
         }
 
         [Test]
         public void GivenCorrectUserInputForAlbumIdReturnCorrectPhoto()
         {
-            const string input = "Photo-Album 1";
+            const string albumId = "1";
 
-            var userInput = new UserInput
+            var expected = new List<PhotoDto>
             {
-                AlbumId = 1,
-                Id = null,
-                Title = null,
-                Url = null,
-                ThunbnailUrl = null
+                new PhotoDto
+                {
+                    AlbumId = 1,
+                    Id = 1,
+                    Title = "Test Title",
+                    Url = "Test Url",
+                    ThunbnailUrl = "Test ThumbnailUrl"
+                }
             };
 
-            var expected = new Task<IEnumerable<PhotoDto>>();
+            _photoValues.GetPhotoValuesAsync(albumId)
+                .Returns(expected);
 
-            PhotoService.ProcessUserInput(input).Returns(userInput);
+            var actual = _sut.GatherPossiblePhotosAsync(albumId);
 
-            _photoValues.GetPhotoValuesAsync(expected.AlbumId, expected.Id, expected.Title, expected.Url,
-                expected.ThunbnailUrl).Returns(expected);
+            actual.Result.ToList().Should().BeEquivalentTo(expected);
+        }
+        
+        [TestCase("1", ExpectedResult = "1")]
+        [TestCase("12", ExpectedResult = "12")]
+        [TestCase("13", ExpectedResult = "13")]
+        [TestCase("135", ExpectedResult = "135")]
+        [TestCase("11 1", ExpectedResult = "Please Enter A Single Number")]
+        [TestCase("51 11", ExpectedResult = "Please Enter A Single Number")]
+        [TestCase("Test", ExpectedResult = "Please Enter A Single Number")]
+        [TestCase("", ExpectedResult = "Please Enter A Single Number")]
+        [Test]
+        public string GivenMultipleUserInputsForAlbumIdReturnCorrectAlbumId(string userInput)
+        {
+            var actual = _sut.ProcessUserInput(userInput);
 
-            var actual = _sut.GatherPossiblePhotosAsync(input);
-
-            actual.Should().Be();
+            return actual;
         }
     }
 }
