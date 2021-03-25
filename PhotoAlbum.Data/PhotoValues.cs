@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using PhotoAlbum.Data.models;
 
@@ -6,14 +7,28 @@ namespace PhotoAlbum.Data
 {
     public interface IPhotoValues
     {
-        Task<Photo> GetPhotoValues();
+        Task<IEnumerable<PhotoDto>> GetPhotoValuesAsync(string albumId);
+        Uri PhotoUriBuilder(string albumId);
     }
     
     public class PhotoValues : IPhotoValues
     {
-        public Task<Photo> GetPhotoValues()
+        private readonly IApiClient _apiClient;
+
+        public PhotoValues(IApiClient apiClient)
         {
-            throw new NotImplementedException();
+            _apiClient = apiClient;
         }
+        
+        public async Task<IEnumerable<PhotoDto>> GetPhotoValuesAsync(string albumId)
+        {
+            var response = await _apiClient.GetAsync<IEnumerable<PhotoDto>>(PhotoUriBuilder(albumId));
+
+            return response;
+        }
+
+        public Uri PhotoUriBuilder(string albumId)
+            => new($"https://jsonplaceholder.typicode.com/photos?albumId={albumId}");
+        
     }
 }
