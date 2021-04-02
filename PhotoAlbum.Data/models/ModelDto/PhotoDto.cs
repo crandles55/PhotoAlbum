@@ -1,6 +1,6 @@
 ﻿namespace PhotoAlbum.Data.models
 {
-    public class PhotoDto
+    public record PhotoDto
     {
         public int AlbumId { get; set; }
         public int Id { get; set; }

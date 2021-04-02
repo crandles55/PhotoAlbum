@@ -15,9 +15,9 @@ namespace PhotoAlbum.Data
     {
         private readonly IApiClient _apiClient;
 
-        public PhotoValues(IApiClient apiClient)
+        public PhotoValues(IApiClient apiClient = null)
         {
-            _apiClient = apiClient;
+            _apiClient = apiClient ?? new ApiClient();
         }
         
         public async Task<IEnumerable<PhotoDto>> GetPhotoValuesAsync(string albumId)
