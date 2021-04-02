@@ -59,26 +59,23 @@ namespace PhotoAlbum
 
         public void Restart()
         {
-            while (true)
+            _console.WriteLine("Would you like to Search for Another Album?");
+            _console.Write("Please Enter Y or N?");
+
+            var input = _console.ReadLine();
+
+            switch (input.ToLower())
             {
-                _console.WriteLine("Would you like to Search for Another Album?");
-                _console.Write("Please Enter Y or N?");
-
-                var input = _console.ReadLine();
-
-                switch (input.ToLower())
-                {
-                    case "y":
-                        _self.PhotoSearch();
-                        break;
-                    case "n":
-                        _console.WriteLine("Goodbye!");
-                        break;
-                    default:
-                        _console.WriteLine("Invalid Entry");
-                        continue;
-                }
-                break;
+                case "y":
+                    _self.PhotoSearch();
+                    break;
+                case "n":
+                    _console.WriteLine("Goodbye!");
+                    break;
+                default:
+                    _console.WriteLine("Invalid Entry");
+                    _self.Restart();
+                    return;
             }
         }
     }
