@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
@@ -10,12 +11,15 @@ namespace PhotoAlbum.Service.Test
 {
     public class PhotoServiceTests
     {
+        private Random _randy;
         private PhotoService _sut;
         private IPhotoValues _photoValues;
-        
+        private const string ErrorMessage = "Please Enter A Single Number";
+
         [SetUp]
         public void Setup()
         {
+            _randy = new Random();
             _photoValues = Substitute.For<IPhotoValues>();
             _sut = new PhotoService(_photoValues);
         }
@@ -59,6 +63,95 @@ namespace PhotoAlbum.Service.Test
             var actual = _sut.ProcessUserInput(userInput);
 
             return actual;
+        }
+
+        [Test]
+        public void GivenValidUserInputsForAlbumId_ReturnCorrectAlbumId()
+        {
+            var userInput = RandomInt().ToString();
+            var actual = _sut.ProcessUserInput(userInput);
+
+            actual.Should().Be(userInput);
+        }
+
+        [Test]
+        public void GivenMultipleIntegers_WhenProcessed_ReturnErrorMessage()
+        {
+            var userInput = RandomPositiveInt().ToString() + " " + RandomPositiveInt().ToString();
+            var actual = _sut.ProcessUserInput(userInput);
+
+            actual.Should().Be(ErrorMessage);
+        }
+
+        [Test]
+        public void GivenNonNumericValue_WhenProcessed_ReturnErrorMessage()
+        {
+            var userInput = RandomString();
+            var actual = _sut.ProcessUserInput(userInput);
+
+            actual.Should().Be(ErrorMessage);
+        }
+
+        [Test]
+        public void GivenDecimalValue_WhenProcessed_ReturnErrorMessage()
+        {
+            var userInput = RandomPositiveInt().ToString() + "." + RandomPositiveInt().ToString();
+            var actual = _sut.ProcessUserInput(userInput);
+
+            actual.Should().Be(ErrorMessage);
+        }
+
+        [Test]
+        public void GivenEmptyValue_WhenProcessed_ReturnErrorMessage()
+        {
+            var userInput = string.Empty;
+            var actual = _sut.ProcessUserInput(userInput);
+
+            actual.Should().Be(ErrorMessage);
+        }
+
+        private List<PhotoDto> RandomPhotos(int count)
+        {
+            var photos = new List<PhotoDto>();
+
+            for (var i = 0; i < count; i++)
+            {
+                photos.Add(RandomPhoto());
+            }
+
+            return photos;
+        }
+
+        private PhotoDto RandomPhoto()
+        {
+            return new PhotoDto
+            {
+                AlbumId = RandomPositiveInt(),
+                Id = RandomPositiveInt(),
+                ThunbnailUrl = RandomString(),
+                Title = RandomString(),
+                Url = RandomString()
+            };
+        }
+
+        private string RandomString()
+        {
+            return System.Guid.NewGuid().ToString();
+        }
+
+        private int RandomPositiveInt()
+        {
+            return _randy.Next(1, int.MaxValue);
+        }
+
+        private int RandomNegativeInt()
+        {
+            return _randy.Next(int.MinValue, -1);
+        }
+
+        private int RandomInt()
+        {
+            return _randy.Next(int.MinValue, int.MaxValue);
         }
     }
 }

@@ -15,9 +15,9 @@ namespace PhotoAlbum.Service
     {
         private readonly IPhotoValues _photoValues;
         
-        public PhotoService(IPhotoValues photoValues)
+        public PhotoService(IPhotoValues photoValues = null)
         {
-            _photoValues = photoValues;
+            _photoValues = photoValues ?? new PhotoValues();
         }
 
 
