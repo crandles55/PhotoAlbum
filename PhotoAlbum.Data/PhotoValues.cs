@@ -20,12 +20,7 @@ namespace PhotoAlbum.Data
             _apiClient = apiClient;
         }
         
-        public async Task<IEnumerable<PhotoDto>> GetPhotoValuesAsync(string albumId)
-        {
-            var response = await _apiClient.GetAsync<IEnumerable<PhotoDto>>(PhotoUriBuilder(albumId));
-
-            return response;
-        }
+        public async Task<IEnumerable<PhotoDto>> GetPhotoValuesAsync(string albumId) => await _apiClient.GetAsync<IEnumerable<PhotoDto>>(PhotoUriBuilder(albumId));
 
         public Uri PhotoUriBuilder(string albumId)
             => new($"https://jsonplaceholder.typicode.com/photos?albumId={albumId}");
